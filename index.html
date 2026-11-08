@@ -201,7 +201,7 @@ input:focus-visible,button:focus-visible,.choice:focus-within{outline:2px solid 
       <h2 id="offerTitle">Call in and get your move scheduled today</h2>
       <p>Book today and get full flexibility on your move dates for the next 2 calendar years, plus an additional $300 off your move.</p>
       <a class="btn" id="offerCall" href="#" hidden>Call in now for an additional $300 off</a>
-      <p class="meta" id="offerNum">Call <span class="repn"></span> at <b>754-305-3707</b>.</p>
+      <p class="meta" id="offerNum">Call <span class="repn"></span> at <a href="tel:7543053707"><b>754-305-3707</b></a>.</p>
       <button class="btn secondary" id="offerClose" type="button">Not right now</button>
     </div>
   </div>
@@ -393,17 +393,28 @@ input:focus-visible,button:focus-visible,.choice:focus-within{outline:2px solid 
       $('offer').hidden = false; $('offerClose').focus();
     }, 700);
   }
+  window.__wt = { finish: finish };
   $('offerClose').addEventListener('click', () => { $('offer').hidden = true; });
+  $('offerCall').addEventListener('click', e => {
+    const num = (CONFIG.callNumber || '').replace(/[^0-9+]/g, '');
+    const touch = /iPhone|iPad|Android|Mobile/i.test(navigator.userAgent);
+    if (!touch) { // desktop browsers often have no phone app: show the number instead
+      e.preventDefault();
+      $('offerNum').innerHTML = 'Call <b>' + CONFIG.callNumber + '</b> from your phone.';
+      try { navigator.clipboard.writeText(CONFIG.callNumber); } catch (x) {}
+    }
+  });
   function startAnalyzing(uid) {
     show('analyzing');
     const t0 = Date.now();
-    let pct = 0, stopped = false, asked = false, paused = false;
+    let pct = 0, stopped = false, asked = false, paused = false, answeredAt = 0;
     const setPct = p => { pct = p; $('pct').textContent = Math.floor(p) + '%'; $('abarFill').style.width = p + '%'; $('abar').setAttribute('aria-valuenow', Math.floor(p)); };
     setPct(0);
     const tick = setInterval(() => {
       if (stopped || paused) return;
-      const sec = (Date.now() - t0) / 1000;
-      setPct(Math.min(97, Math.max(pct, 97 * (1 - Math.exp(-sec / 240)))));
+      // 0 to 80% while Claude analyzes the video; 80 to 99% after the customer answers, until the quote is entered
+      if (!answeredAt) { const sec = (Date.now() - t0) / 1000; setPct(Math.min(79, Math.max(pct, 80 * (1 - Math.exp(-sec / 150))))); }
+      else { const sec = (Date.now() - answeredAt) / 1000; setPct(Math.min(99, Math.max(pct, 80 + 19 * (1 - Math.exp(-sec / 300))))); }
     }, 500);
     const poll = async () => {
       if (stopped) return;
@@ -413,9 +424,9 @@ input:focus-visible,button:focus-visible,.choice:focus-within{outline:2px solid 
           if (r.ok) {
             const res = await r.json();
             if (res.questions && res.questions.length && !asked) {
-              asked = true; paused = true;
-              showQuestions(uid, res.questions, () => { paused = false; show('analyzing'); });
-            } else if (res.done) {
+              asked = true; paused = true; setPct(80);
+              showQuestions(uid, res.questions, () => { paused = false; answeredAt = Date.now(); show('analyzing'); });
+            } else if (res.done && !(res.questions && res.questions.length && !asked)) {
               stopped = true; clearInterval(tick);
               for (let p = Math.floor(pct); p <= 100; p += 2) { setPct(Math.min(100, p)); await new Promise(z => setTimeout(z, 40)); }
               setPct(100);
