@@ -1,0 +1,61 @@
+{
+ "questions": [
+  {
+   "id": "sect",
+   "text": "Is your sectional 2 pieces or 3 pieces?",
+   "options": [
+    {
+     "key": "two",
+     "label": "2-piece"
+    },
+    {
+     "key": "three",
+     "label": "3-piece"
+    }
+   ]
+  },
+  {
+   "id": "coffee",
+   "text": "Is your coffee table standard size or large?",
+   "options": [
+    {
+     "key": "std",
+     "label": "Standard"
+    },
+    {
+     "key": "lg",
+     "label": "Large"
+    }
+   ]
+  },
+  {
+   "id": "chair",
+   "text": "You said one of the two black desk chairs is not going. Is the other one going?",
+   "options": [
+    {
+     "key": "one",
+     "label": "Yes, one chair is going"
+    },
+    {
+     "key": "both",
+     "label": "No, both are going"
+    }
+   ]
+  },
+  {
+   "id": "wd",
+   "text": "Are the washer and dryer going with you?",
+   "options": [
+    {
+     "key": "stay",
+     "label": "No, they stay"
+    },
+    {
+     "key": "go",
+     "label": "Yes, they go"
+    }
+   ]
+  }
+ ],
+ "done": false
+}
