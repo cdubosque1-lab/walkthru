@@ -92,6 +92,10 @@ input:focus-visible,button:focus-visible,.choice:focus-within{outline:2px solid 
       <div class="field"><label for="fromZip">Moving from (zip)</label><input id="fromZip" type="text" inputmode="numeric" pattern="[0-9]{5}" maxlength="5" autocomplete="postal-code" required></div>
       <div class="field"><label for="toZip">Moving to (zip)</label><input id="toZip" type="text" inputmode="numeric" pattern="[0-9]{5}" maxlength="5" required></div>
     </div>
+    <div class="row2">
+      <div class="field"><label for="phone">Mobile number</label><input id="phone" type="tel" inputmode="tel" autocomplete="tel" required></div>
+      <div class="field"><label for="email">Email (optional)</label><input id="email" type="text" inputmode="email" autocomplete="email"></div>
+    </div>
     <div class="field"><label for="moveDate">Estimated move date</label><input id="moveDate" type="date" required></div>
     <fieldset class="field" style="border:0;padding:0;margin:0">
       <legend class="label" style="margin-bottom:6px">Will you pack your own boxes?</legend>
@@ -189,16 +193,20 @@ input:focus-visible,button:focus-visible,.choice:focus-within{outline:2px solid 
     const first = $('first').value.trim(), last = $('last').value.trim();
     const fromZip = $('fromZip').value.trim(), toZip = $('toZip').value.trim();
     const moveDate = $('moveDate').value;
+    const phone = $('phone').value.replace(/[^0-9]/g, '').replace(/^1(?=\d{10}$)/, '');
+    const email = $('email').value.trim();
     const packing = (document.querySelector('input[name=packing]:checked') || {}).value;
     const problems = [];
     if (!first || !last) problems.push('your first and last name');
+    if (phone.length !== 10) problems.push('a 10-digit mobile number');
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) problems.push('a valid email (or leave it blank)');
     if (!/^\d{5}$/.test(fromZip) || !/^\d{5}$/.test(toZip)) problems.push('both 5-digit zip codes');
     if (!moveDate) problems.push('your move date');
     if (!packing) problems.push('whether you will pack');
     if (!$('consent').checked) problems.push('the checkbox to agree');
     if (problems.length) { $('detailsErr').textContent = 'Please add ' + problems.join(', ') + '.'; $('detailsErr').hidden = false; return; }
     $('detailsErr').hidden = true;
-    answers = { first, last, from_zip: fromZip, to_zip: toZip, move_date: moveDate, packing, rep: repName };
+    answers = { first, last, phone, email, from_zip: fromZip, to_zip: toZip, move_date: moveDate, packing, rep: repName };
     show('capture');
   });
 
