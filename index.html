@@ -5,21 +5,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>Your Moving Walkthrough</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
 <style>
 :root{
-  --bg:#F2F4F7; --surface:#FFFFFF; --ink:#121720; --muted:#465060; --line:#D9DFE7;
-  --accent:#1E4ED0; --accent-ink:#FFFFFF; --accent-soft:#E7EDFC; --accent-text:#1A42B0;
-  --rec:#C8261E; --ok-bg:#E3F1EA; --ok-ink:#1D5A3C; --warn-bg:#FFF4DA; --warn-ink:#744000;
-  --video-bg:#0C1016;
-  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --bg:#F6F3EE; --surface:#FFFFFF; --ink:#14233A; --muted:#54627A; --line:#E3DDD2;
+  --navy:#12315A; --navy-2:#1C4A82;
+  --accent:#D9480F; --accent-ink:#FFFFFF; --accent-soft:#FDEBDD; --accent-text:#B03A0A;
+  --rec:#C8261E; --ok-bg:#E3F1EA; --ok-ink:#1D5A3C; --warn-bg:#FFF1D6; --warn-ink:#6B3F00;
+  --video-bg:#0C1016; --shadow:0 1px 2px rgba(20,35,58,.06),0 8px 24px rgba(20,35,58,.06);
+  --sans:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   color-scheme:light;
 }
 @media (prefers-color-scheme:dark){:root{
-  --bg:#0E1218; --surface:#151A22; --ink:#E7EBF1; --muted:#A6B0BE; --line:#28303C;
-  --accent:#7097FF; --accent-ink:#0A0F1C; --accent-soft:#1B2643; --accent-text:#A3BCFF;
+  --bg:#0E1622; --surface:#16212F; --ink:#EAEFF7; --muted:#A9B5C6; --line:#263446;
+  --navy:#0B1E38; --navy-2:#15355F;
+  --accent:#FF8A4C; --accent-ink:#1A0D04; --accent-soft:#33200F; --accent-text:#FFB083;
   --rec:#FF6B5E; --ok-bg:#16291F; --ok-ink:#8FD3AE; --warn-bg:#2C2210; --warn-ink:#F2C774;
-  --video-bg:#05070A; color-scheme:dark;}}
+  --video-bg:#05070A; --shadow:0 1px 2px rgba(0,0,0,.3); color-scheme:dark;}}
 *{box-sizing:border-box}
 html,body{margin:0}
 body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.5;-webkit-text-size-adjust:100%}
@@ -79,19 +81,159 @@ input:focus-visible,button:focus-visible,.choice:focus-within{outline:2px solid 
 .modal h2{font-size:24px;font-weight:700;letter-spacing:-.01em}
 .modal .save{display:inline-block;align-self:flex-start;padding:4px 10px;border-radius:999px;background:var(--ok-bg);color:var(--ok-ink);font-weight:700;font-size:14px}
 .foot{font-size:12px;color:var(--muted);text-align:center}
+
+.app{max-width:600px}
+.card{border-radius:18px;box-shadow:var(--shadow);padding:22px}
+.btn{border-radius:14px;font-weight:700;box-shadow:0 2px 0 rgba(0,0,0,.08)}
+.btn.secondary{box-shadow:none}
+input[type=text],input[type=date],input[type=tel],select{border-radius:12px;border-color:var(--line)}
+.hero{background:linear-gradient(160deg,var(--navy) 0%,var(--navy-2) 100%);border-radius:22px;color:#fff;padding:22px 20px 0;overflow:hidden;position:relative}
+.hero .eyebrow{color:#FFC9A8}
+.hero h1{font-size:30px;font-weight:800;letter-spacing:-.02em;margin:6px 0 8px;color:#fff}
+.hero p.lead{color:#D5E1F2;font-size:15px}
+.hero svg{display:block;width:100%;height:auto;margin-top:8px}
+.brandbar{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.01em;color:#fff;font-size:15px}
+.brandbar i{width:30px;height:30px;border-radius:9px;background:var(--accent);display:inline-flex;align-items:center;justify-content:center;font-style:normal}
+.dots{display:flex;gap:8px;justify-content:center}
+.dots span{width:8px;height:8px;border-radius:50%;background:var(--line);transition:all .2s}
+.dots span.on{background:var(--accent);width:24px;border-radius:4px}
+.slide h2{font-size:24px;font-weight:800;letter-spacing:-.02em}
+.slide .kick{font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--accent-text)}
+.stepsl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px;counter-reset:s}
+.stepsl li{display:flex;gap:12px;align-items:flex-start;counter-increment:s}
+.stepsl li:before{content:counter(s);flex:none;width:28px;height:28px;border-radius:50%;background:var(--navy);color:#fff;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center}
+.stepsl b{display:block;font-size:15px}
+.stepsl span{color:var(--muted);font-size:14px}
+.pill{display:inline-block;padding:4px 10px;border-radius:999px;background:var(--ok-bg);color:var(--ok-ink);font-weight:700;font-size:13px;align-self:flex-start}
+.callout{display:flex;gap:12px;padding:14px;border-radius:14px;background:var(--accent-soft);color:var(--ink);font-size:14px;align-items:flex-start}
+.callout svg{flex:none;margin-top:2px}
+.callout.warn{background:var(--warn-bg);color:var(--warn-ink)}
+.callout b{display:block;margin-bottom:2px}
+.perk{display:flex;gap:12px;padding:14px;border:1px solid var(--line);border-radius:14px;align-items:flex-start}
+.perk svg{flex:none}
+.perk b{display:block}
+.perk span{color:var(--muted);font-size:14px}
+details.more{font-size:14px;color:var(--muted)}
+details.more summary{cursor:pointer;font-weight:700;color:var(--accent-text)}
+.navrow{display:grid;grid-template-columns:1fr 2fr;gap:10px}
+.sect-intro{display:flex;flex-direction:column;gap:10px}
+.hint{font-size:13px;color:var(--muted)}
+.savebox{padding:14px;border-radius:14px;border:1px dashed var(--accent);background:var(--accent-soft);display:flex;flex-direction:column;gap:6px;font-size:14px}
+.savebox b{font-size:15px;color:var(--accent-text)}
+.stay{background:var(--warn-bg);color:var(--warn-ink);border-radius:14px;padding:14px;display:flex;gap:12px;align-items:flex-start;font-size:15px}
+.stay b{display:block}
+.pulse{animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.55}}
+@media (prefers-reduced-motion:reduce){.pulse{animation:none}}
+select{appearance:auto}
 </style>
 </head>
 <body>
 <main class="app">
-  <header>
-    <p class="eyebrow">Moving walkthrough</p>
-    <h1>Show us what's moving</h1>
-    <p class="lead">Your mover, <span id="repName">your mover</span>, will build your inventory from a quick video of your home. It takes about 5 minutes.</p>
-    <div class="steps" aria-hidden="true"><span id="s1" class="on"></span><span id="s2"></span><span id="s3"></span></div>
+  <header class="hero" id="hero">
+    <div class="brandbar"><i><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 7h12v9H3zM15 10h4l2 3v3h-6z" fill="#fff"/><circle cx="7" cy="17" r="2" fill="#12315A" stroke="#fff"/><circle cx="17" cy="17" r="2" fill="#12315A" stroke="#fff"/></svg></i>Top Nation Relocation</div>
+    <h1>Let's get your move priced</h1>
+    <p class="lead"><span id="repName">your mover</span> will build your inventory from a quick video of your home. About 5 minutes.</p>
+    <svg viewBox="0 0 560 190" role="img" aria-label="Movers carrying boxes beside a moving truck" xmlns="http://www.w3.org/2000/svg">
+<rect x="0" y="160" width="560" height="30" fill="#0B2342"/>
+<rect x="0" y="158" width="560" height="4" fill="#26507F"/>
+<g transform="translate(250,40)">
+ <rect x="0" y="0" width="215" height="112" rx="8" fill="#F4F7FB"/>
+ <rect x="0" y="80" width="215" height="10" fill="#D9480F"/>
+ <rect x="14" y="20" width="60" height="6" rx="3" fill="#C5D2E4"/><rect x="14" y="34" width="90" height="6" rx="3" fill="#C5D2E4"/>
+ <path d="M218 30 h38 q10 0 16 9 l20 28 v45 h-74z" fill="#D9480F"/>
+ <path d="M228 40 h26 q6 0 9 5 l12 18 h-47z" fill="#BFE0F5"/>
+ <rect x="0" y="108" width="290" height="14" rx="3" fill="#1B2B44"/>
+ <circle cx="52" cy="122" r="18" fill="#101826"/><circle cx="52" cy="122" r="8" fill="#A9B5C6"/>
+ <circle cx="236" cy="122" r="18" fill="#101826"/><circle cx="236" cy="122" r="8" fill="#A9B5C6"/>
+</g>
+<g transform="translate(30,60)">
+ <circle cx="62" cy="26" r="15" fill="#F2C9A5"/><path d="M47 22 q15 -20 30 0 v4 h-30z" fill="#D9480F"/>
+ <rect x="44" y="42" width="36" height="52" rx="10" fill="#1C4A82"/>
+ <rect x="48" y="90" width="12" height="40" rx="5" fill="#0B2342"/><rect x="66" y="90" width="12" height="40" rx="5" fill="#0B2342"/>
+ <rect x="80" y="54" width="52" height="40" rx="4" fill="#C98F55"/><rect x="80" y="70" width="52" height="5" fill="#E4B27A"/>
+ <path d="M72 56 l20 14" stroke="#1C4A82" stroke-width="10" stroke-linecap="round"/>
+</g>
+<g transform="translate(170,100)">
+ <rect x="0" y="30" width="50" height="38" rx="3" fill="#C98F55"/><rect x="0" y="44" width="50" height="4" fill="#E4B27A"/>
+ <rect x="10" y="0" width="38" height="30" rx="3" fill="#B98048"/><rect x="10" y="12" width="38" height="4" fill="#DDAA70"/>
+</g>
+</svg>
   </header>
+  <div class="steps" id="stepsBar" aria-hidden="true" hidden><span id="s1" class="on"></span><span id="s2"></span><span id="s3"></span></div>
+
+  <!-- Welcome slides -->
+  <section id="welcome" class="card slide" aria-live="polite">
+    <div class="dots" aria-hidden="true"><span class="on"></span><span></span><span></span><span></span></div>
+    <div class="sl" data-i="0">
+      <div class="sect-intro">
+        <span class="kick">How it works</span>
+        <h2>The whole move, handled</h2>
+        <span class="pill">All included. No extra charge.</span>
+        <ol class="stepsl">
+          <li><div><b>Walkthrough photos</b><span>We document everything so it arrives in the same condition it left.</span></div></li>
+          <li><div><b>Disassembly</b><span>All standard furniture, taken apart for you.</span></div></li>
+          <li><div><b>Full wrap</b><span>Blanket, pad and shrink wrap on every piece of furniture.</span></div></li>
+          <li><div><b>Load and drive</b><span>A 26-foot box truck or a semi, depending on your move.</span></div></li>
+          <li><div><b>Unload and set up</b><span>Everything unwrapped and reassembled. You're the foreman: point, and the crew places it.</span></div></li>
+          <li><div><b>Clean sweep</b><span>The crew takes the pads, wrap and debris with them.</span></div></li>
+        </ol>
+      </div>
+    </div>
+    <div class="sl" data-i="1" hidden>
+      <div class="sect-intro">
+        <span class="kick">Your choice</span>
+        <h2>Pack as little or as much as you want</h2>
+        <div class="perk"><svg width="44" height="44" viewBox="0 0 44 44" fill="none" aria-hidden="true"><path d="M6 14l16-8 16 8v18l-16 8-16-8z" fill="#E4B27A" stroke="#8A5A28" stroke-width="2" stroke-linejoin="round"/><path d="M6 14l16 8 16-8M22 22v18" stroke="#8A5A28" stroke-width="2"/></svg><div><b>Boxes, mirrors, artwork and TVs</b><span>Want help packing any of it? We offer it, and we supply the boxes, including TV boxes.</span></div></div>
+        <div class="perk"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="#12315A" stroke-width="2"/><path d="M12 11v6M12 7.5v.5" stroke="#12315A" stroke-width="2.4" stroke-linecap="round"/></svg><div><b>Or do it all yourself</b><span>Your call. Tell us what you'd like on the next page, and you can change your mind later.</span></div></div>
+      </div>
+    </div>
+    <div class="sl" data-i="2" hidden>
+      <div class="sect-intro">
+        <span class="kick">Save money</span>
+        <h2>Book early, save 20 to 50%</h2>
+        <div class="perk"><svg width="44" height="44" viewBox="0 0 44 44" fill="none" aria-hidden="true"><rect x="4" y="8" width="36" height="32" rx="6" fill="#FDEBDD" stroke="#D9480F" stroke-width="2"/><rect x="4" y="8" width="36" height="10" rx="6" fill="#D9480F"/><path d="M14 4v8M30 4v8" stroke="#12315A" stroke-width="3" stroke-linecap="round"/><path d="M13 27l5 5 11-11" stroke="#12315A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><div><b>Think airline ticket</b><span>The earlier you reserve, the lower your price. We make that easy with a floating reservation.</span></div></div>
+        <p>Pick a date as a placeholder. If it changes, call us and we change it for free. Flexible for 2 calendar years.</p>
+        <details class="more"><summary>No exact drop-off address yet?</summary><p style="margin-top:6px">That's fine. Give us the zip code you're headed to. Anywhere within 200 miles of it works, and we only need the exact address on move day.</p></details>
+      </div>
+    </div>
+    <div class="sl" data-i="3" hidden>
+      <div class="sect-intro">
+        <span class="kick">Bonus</span>
+        <h2>30 days of free storage</h2>
+        <div class="perk"><svg width="44" height="44" viewBox="0 0 44 44" fill="none" aria-hidden="true"><path d="M6 18l16-10 16 10v20H6z" fill="#E3F1EA" stroke="#1D5A3C" stroke-width="2" stroke-linejoin="round"/><rect x="15" y="24" width="14" height="14" fill="#1D5A3C"/><path d="M22 24v14" stroke="#E3F1EA" stroke-width="2"/></svg><div><b>Free storage and free redelivery</b><span>Hold your items for up to 30 days at no charge, then we deliver them to your final destination, also free.</span></div></div>
+        <p class="meta">Need longer? After the first 30 days it's $0.50 per cubic foot. Once we have your inventory we'll tell you your exact monthly rate.</p>
+      </div>
+    </div>
+    <div class="navrow"><button class="btn secondary" id="wBack" type="button" hidden>Back</button><button class="btn" id="wNext" type="button">Next</button></div>
+  </section>
 
   <!-- Step 1: details -->
-  <form id="details" class="card" novalidate>
+  <form id="details" class="card" novalidate hidden>
+    <div class="sect-intro">
+      <h2>First, how much packing help?</h2>
+      <div class="callout"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="#B03A0A" stroke-width="2"/><path d="M12 11v6M12 7.5v.5" stroke="#B03A0A" stroke-width="2.4" stroke-linecap="round"/></svg><div><b>Included on every move, at no extra charge</b>We always disassemble and reassemble standard furniture, fully blanket, pad and shrink wrap it, and do all the loading and unloading. We do this on every move for liability reasons. If you've already done some of it, great.</div></div>
+    </div>
+    <fieldset class="field" style="border:0;padding:0;margin:0">
+      <legend class="label" style="margin-bottom:6px">Would you like us to supply and pack your boxes?</legend>
+      <div class="choices">
+        <label class="choice"><input type="radio" name="packing" value="we_pack"> <span>Yes, supply and pack all my boxes for me<br><small class="hint">A little extra cost</small></span></label>
+        <label class="choice"><input type="radio" name="packing" value="self"> No, I'll supply and pack my own boxes</label>
+        <label class="choice"><input type="radio" name="packing" value="some"> I'll do some, and I'd like the movers to do some</label>
+        <label class="choice"><input type="radio" name="packing" value="unsure"> I'm not sure yet</label>
+      </div>
+    </fieldset>
+    <fieldset class="field" style="border:0;padding:0;margin:0">
+      <legend class="label" style="margin-bottom:6px">Do you think you'll need storage?</legend>
+      <div class="choices">
+        <label class="choice"><input type="radio" name="storage" value="yes"> Yes</label>
+        <label class="choice"><input type="radio" name="storage" value="no"> No</label>
+        <label class="choice"><input type="radio" name="storage" value="maybe"> Maybe</label>
+      </div>
+      <div class="field" id="storLenWrap" hidden style="margin-top:8px"><label class="sub" for="storLen">About how long?</label>
+        <select id="storLen"><option value="">Choose one</option><option>Under 30 days</option><option>1 to 3 months</option><option>3 to 6 months</option><option>6 months or more</option><option>Not sure</option></select></div>
+    </fieldset>
+    <hr style="border:0;border-top:1px solid var(--line);width:100%;margin:2px 0">
     <h2>Your move</h2>
     <div class="row2">
       <div class="field"><label for="first">First name</label><input id="first" type="text" autocomplete="given-name" required></div>
@@ -106,11 +248,12 @@ input:focus-visible,button:focus-visible,.choice:focus-within{outline:2px solid 
     </fieldset>
     <fieldset class="field" style="border:0;padding:0;margin:0">
       <legend class="label" style="margin-bottom:6px">Moving to</legend>
-      <div class="field"><label class="sub" for="toAddr">Street address</label><input id="toAddr" type="text" required></div>
+      <div class="field"><label class="sub" for="toAddr">Street address (an approximate one is fine)</label><input id="toAddr" type="text" required></div>
       <div class="row3"><div class="field"><label class="sub" for="toCity">City</label><input id="toCity" type="text" required></div>
       <div class="field"><label class="sub" for="toState">State</label><input id="toState" type="text" maxlength="2" autocapitalize="characters" required></div>
       <div class="field"><label class="sub" for="toZip">Zip</label><input id="toZip" type="text" inputmode="numeric" pattern="[0-9]{5}" maxlength="5" required></div></div>
     </fieldset>
+    <p class="hint" style="margin-top:-6px">No exact drop-off address yet? No problem. As long as your final address is within 200 miles of the zip code you enter, you're good to go. We only need the exact address on move day.</p>
     <div class="field"><label for="beds">How many bedrooms are you moving?</label>
       <select id="beds" required><option value="">Choose one</option><option>Studio</option><option>1 bedroom</option><option>2 bedrooms</option><option>3 bedrooms</option><option>4 bedrooms</option><option>5 or more bedrooms</option></select></div>
     <div class="row2">
@@ -118,14 +261,9 @@ input:focus-visible,button:focus-visible,.choice:focus-within{outline:2px solid 
       <div class="field"><label for="email">Email (optional)</label><input id="email" type="text" inputmode="email" autocomplete="email"></div>
     </div>
     <div class="field"><label for="moveDate">Estimated move date</label><input id="moveDate" type="date" required></div>
-    <fieldset class="field" style="border:0;padding:0;margin:0">
-      <legend class="label" style="margin-bottom:6px">Will you pack your own boxes?</legend>
-      <div class="choices">
-        <label class="choice"><input type="radio" name="packing" value="Yes"> Yes, I'll pack</label>
-        <label class="choice"><input type="radio" name="packing" value="No"> No, I'd like packing help</label>
-        <label class="choice"><input type="radio" name="packing" value="Some"> Some of it</label>
-      </div>
-    </fieldset>
+    <div class="savebox"><b>Smart movers book early</b>
+      <span>Moves are priced like airline tickets: the earlier you reserve, the better your rate, often 20 to 50% less. Most people don't know their exact date this far out, so we use a floating reservation. Your date is a placeholder, and if it changes you just call us and we change it for free, with full flexibility for 2 calendar years.</span>
+      <span>Think of it as an ace of spades in your back pocket. When you're ready, put it on the table and we show up.</span></div>
     <label class="consent"><input id="consent" type="checkbox"> I agree that my video and answers can be used to prepare my moving estimate.</label>
     <p class="err" id="detailsErr" role="alert" hidden></p>
     <button class="btn" type="submit">Continue</button>
@@ -134,6 +272,7 @@ input:focus-visible,button:focus-visible,.choice:focus-within{outline:2px solid 
   <!-- Step 2: record or upload -->
   <section id="capture" class="card" hidden>
     <h2>Record your walkthrough</h2>
+    <div class="callout warn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="9" y="3" width="6" height="12" rx="3" stroke="currentColor" stroke-width="2"/><path d="M5 11a7 7 0 0014 0M12 18v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><div><b>Say it out loud</b>As you film, say out loud anything that is NOT going with you, like "this couch is staying." We listen to the audio.</div></div>
     <ul class="tips">
       <li>Go room by room, slowly.</li>
       <li>Open closets and cabinets.</li>
@@ -171,16 +310,16 @@ input:focus-visible,button:focus-visible,.choice:focus-within{outline:2px solid 
 
   <!-- Analyzing -->
   <section id="analyzing" class="card" hidden>
-    <h2>Analyzing video</h2>
+    <h2 class="pulse">Analyzing your video</h2>
     <p class="pct" id="pct">0%</p>
     <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" id="abar"><i id="abarFill"></i></div>
-    <p class="meta">This can take several minutes. Keep this page open.</p>
+    <div class="stay"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3l10 18H2z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 10v5M12 18v.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg><div><b>Please don't close this page</b>We're analyzing your video right now. This can take several minutes, and your questions will appear here. Leaving this page will lose your place.</div></div>
   </section>
 
   <!-- Questions -->
   <form id="questions" class="card" hidden novalidate>
     <h2>A few quick questions</h2>
-    <p class="meta">We went through your video. Help us get these right.</p>
+    <p class="meta" id="qIntro">We went through your video. Help us get these right.</p>
     <div id="qlist"></div>
     <p class="err" id="qErr" role="alert" hidden></p>
     <button class="btn" id="qSend" type="submit">Submit answers</button>
@@ -235,7 +374,12 @@ input:focus-visible,button:focus-visible,.choice:focus-within{outline:2px solid 
     videoBitrate: 2000000
   };
   const $ = id => document.getElementById(id);
-  const rep = (location.hash.replace('#', '').trim() || CONFIG.defaultRep).replace(/[^A-Za-z -]/g, '');
+  // Link format: #christian  or  #christian-T4120051 (rep, plus an existing Granot job number)
+  let rawHash = '';
+  try { rawHash = decodeURIComponent(location.hash.replace('#', '')).trim(); } catch (e) { rawHash = location.hash.replace('#', '').trim(); }
+  const jm = rawHash.match(/^(.*?)-+[Tt]?(\d{5,9})$/);
+  const jobNo = jm ? 'T' + jm[2] : '';
+  const rep = ((jm ? jm[1] : rawHash) || CONFIG.defaultRep).replace(/[^A-Za-z -]/g, '').trim() || CONFIG.defaultRep;
   const repName = rep.charAt(0).toUpperCase() + rep.slice(1);
   $('repName').textContent = repName;
 
@@ -243,13 +387,33 @@ input:focus-visible,button:focus-visible,.choice:focus-within{outline:2px solid 
   let started = 0, tick = null, hasSound = false, wakeLock = null, recordedSeconds = 0;
 
   function show(id) {
-    ['details', 'capture', 'review', 'analyzing', 'questions', 'done'].forEach(s => { $(s).hidden = s !== id; });
-    const n = { details: 1, capture: 2, review: 3, analyzing: 3, questions: 3, done: 3 }[id];
+    ['welcome', 'details', 'capture', 'review', 'analyzing', 'questions', 'done'].forEach(s => { $(s).hidden = s !== id; });
+    $('stepsBar').hidden = id === 'welcome';
+    const n = { welcome: 0, details: 1, capture: 2, review: 3, analyzing: 3, questions: 3, done: 3 }[id];
     ['s1', 's2', 's3'].forEach((s, i) => $(s).classList.toggle('on', i < n));
+    $('hero').hidden = !(id === 'welcome' || id === 'details');
     window.scrollTo({ top: 0 });
   }
   const fmt = s => Math.floor(s / 60) + ':' + String(Math.floor(s % 60)).padStart(2, '0');
   const clean = v => String(v || '').replace(/[|=\\]/g, ' ').trim().slice(0, 80);
+
+  // Welcome slides
+  let wi = 0;
+  const slides = Array.from(document.querySelectorAll('#welcome .sl')), wdots = Array.from(document.querySelectorAll('#welcome .dots span'));
+  function showSlide(i) {
+    wi = Math.max(0, Math.min(slides.length - 1, i));
+    slides.forEach((el, k) => { el.hidden = k !== wi; });
+    wdots.forEach((d, k) => d.classList.toggle('on', k === wi));
+    $('wBack').hidden = wi === 0;
+    $('wNext').textContent = wi === slides.length - 1 ? "Let's get started" : 'Next';
+    if (wi) $('welcome').scrollIntoView({ block: 'start' });
+  }
+  $('wNext').addEventListener('click', () => { if (wi === slides.length - 1) show('details'); else showSlide(wi + 1); });
+  $('wBack').addEventListener('click', () => showSlide(wi - 1));
+  document.querySelectorAll('input[name=storage]').forEach(r => r.addEventListener('change', () => {
+    const v = (document.querySelector('input[name=storage]:checked') || {}).value;
+    $('storLenWrap').hidden = !(v === 'yes' || v === 'maybe');
+  }));
 
   // Step 1
   $('details').addEventListener('submit', e => {
@@ -263,6 +427,8 @@ input:focus-visible,button:focus-visible,.choice:focus-within{outline:2px solid 
     const phone = $('phone').value.replace(/[^0-9]/g, '').replace(/^1(?=\d{10}$)/, '');
     const email = $('email').value.trim();
     const packing = (document.querySelector('input[name=packing]:checked') || {}).value;
+    const storage = (document.querySelector('input[name=storage]:checked') || {}).value;
+    const storLen = (storage === 'yes' || storage === 'maybe') ? $('storLen').value : '';
     const problems = [];
     if (!first || !last) problems.push('your first and last name');
     if (phone.length !== 10) problems.push('a 10-digit mobile number');
@@ -271,11 +437,14 @@ input:focus-visible,button:focus-visible,.choice:focus-within{outline:2px solid 
     if (!toAddr || !toCity || !/^[A-Z]{2}$/.test(toState) || !/^\d{5}$/.test(toZip)) problems.push('your full moving-to address');
     if (!beds) problems.push('how many bedrooms');
     if (!moveDate) problems.push('your move date');
-    if (!packing) problems.push('whether you will pack');
+    if (!packing) problems.push('your packing choice');
+    if (!storage) problems.push('whether you may need storage');
+    if ((storage === 'yes' || storage === 'maybe') && !storLen) problems.push('about how long you would need storage');
     if (!$('consent').checked) problems.push('the checkbox to agree');
     if (problems.length) { $('detailsErr').textContent = 'Please add ' + problems.join(', ') + '.'; $('detailsErr').hidden = false; return; }
     $('detailsErr').hidden = true;
-    answers = { first, last, phone, email, from_addr: fromAddr, from_city: fromCity, from_state: fromState, from_zip: fromZip, to_addr: toAddr, to_city: toCity, to_state: toState, to_zip: toZip, bedrooms: beds, move_date: moveDate, packing, rep: repName };
+    answers = { first, last, phone, email, from_addr: fromAddr, from_city: fromCity, from_state: fromState, from_zip: fromZip, to_addr: toAddr, to_city: toCity, to_state: toState, to_zip: toZip, bedrooms: beds, move_date: moveDate, packing, storage, storage_len: storLen, rep: repName };
+    if (jobNo) answers.job = jobNo;
     show('capture');
   });
 
@@ -462,7 +631,7 @@ input:focus-visible,button:focus-visible,.choice:focus-within{outline:2px solid 
     const h = Math.floor(m / 60), mm = m % 60;
     const timeLab = $('schedTime').selectedOptions[0].textContent;
     const when = d.iso + ' ' + String(h).padStart(2, '0') + ':' + String(mm).padStart(2, '0') + ' ET';
-    const out = { uid: answers.uid, first: answers.first, last: answers.last, phone: answers.phone, when: when, label: d.label.replace(/,/g, '') + ' at ' + timeLab + ' ET' };
+    const out = { uid: answers.uid, job: answers.job || '', first: answers.first, last: answers.last, phone: answers.phone, when: when, label: d.label.replace(/,/g, '') + ' at ' + timeLab + ' ET' };
     $('schedGo').disabled = true;
     const png = Uint8Array.from(atob('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=='), c => c.charCodeAt(0));
     const ctx = Object.keys(out).map(k => k + '=' + clean(out[k])).join('|');
@@ -512,7 +681,7 @@ input:focus-visible,button:focus-visible,.choice:focus-within{outline:2px solid 
             const res = await r.json();
             if (res.questions && res.questions.length && !asked) {
               asked = true; paused = true; setPct(80);
-              showQuestions(uid, res.questions, () => { paused = false; answeredAt = Date.now(); show('analyzing'); });
+              showQuestions(uid, res.questions, res.intro || '', () => { paused = false; answeredAt = Date.now(); show('analyzing'); });
             } else if (res.done && !(res.questions && res.questions.length && !asked)) {
               stopped = true; clearInterval(tick);
               for (let p = Math.floor(pct); p <= 100; p += 2) { setPct(Math.min(100, p)); await new Promise(z => setTimeout(z, 40)); }
@@ -529,7 +698,8 @@ input:focus-visible,button:focus-visible,.choice:focus-within{outline:2px solid 
     };
     setTimeout(poll, 8000);
   }
-  function showQuestions(uid, qs, after) {
+  function showQuestions(uid, qs, intro, after) {
+    $('qIntro').textContent = intro || 'We went through your video. Help us get these right.';
     $('qlist').innerHTML = qs.map(q => '<fieldset class="q" style="border:0;padding:0;margin:0 0 14px"><legend class="label" style="margin-bottom:6px">' + q.text.replace(/[<>&]/g, '') + '</legend><div class="choices">' +
       q.options.map(o => '<label class="choice"><input type="radio" name="q_' + q.id + '" value="' + o.key + '"> ' + o.label.replace(/[<>&]/g, '') + '</label>').join('') + '</div></fieldset>').join('');
     show('questions'); ding();
