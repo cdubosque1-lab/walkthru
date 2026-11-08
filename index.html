@@ -201,8 +201,22 @@ input:focus-visible,button:focus-visible,.choice:focus-within{outline:2px solid 
       <h2 id="offerTitle">Call in and get your move scheduled today</h2>
       <p>Book today and get full flexibility on your move dates for the next 2 calendar years, plus an additional $300 off your move.</p>
       <a class="btn" id="offerCall" href="#" hidden>Call in now for an additional $300 off</a>
-      <p class="meta" id="offerNum">Call <span class="repn"></span> at <a href="tel:7543053707"><b>754-305-3707</b></a>.</p>
+      <p class="meta" id="offerNum">Call <span class="repn"></span> at <a href="tel:7543050873"><b>754-305-0873</b></a>.</p>
       <button class="btn secondary" id="offerClose" type="button">Not right now</button>
+    </div>
+  </div>
+
+  <div id="sched" class="modal" role="dialog" aria-modal="true" aria-labelledby="schedTitle" hidden>
+    <div class="box">
+      <h2 id="schedTitle">No problem. Pick a time for a call.</h2>
+      <p>Choose any time in the next 3 days between 7 AM and 9 PM Eastern, and <span class="repn"></span> will call you.</p>
+      <label class="label" for="schedDay">Day</label>
+      <select id="schedDay"></select>
+      <label class="label" for="schedTime">Time (Eastern)</label>
+      <select id="schedTime"></select>
+      <p class="meta" id="schedErr" hidden style="color:#b3261e"></p>
+      <button class="btn" id="schedGo" type="button">Schedule my call</button>
+      <button class="btn secondary" id="schedSkip" type="button">Skip</button>
     </div>
   </div>
 
@@ -215,7 +229,7 @@ input:focus-visible,button:focus-visible,.choice:focus-within{outline:2px solid 
     cloudName: 'awdkllag',
     uploadPreset: 'walkthru_unsigned',
     defaultRep: 'Christian',
-    callNumber: '754-305-3707',
+    callNumber: '754-305-0873',
     maxMB: 95,
     maxSeconds: 360,
     videoBitrate: 2000000
@@ -390,11 +404,84 @@ input:focus-visible,button:focus-visible,.choice:focus-within{outline:2px solid 
     setTimeout(() => {
       document.querySelectorAll('.repn').forEach(e => { e.textContent = repName; });
       if (CONFIG.callNumber) { $('offerCall').href = 'tel:' + CONFIG.callNumber.replace(/[^0-9+]/g, ''); $('offerCall').hidden = false;  }
-      $('offer').hidden = false; $('offerClose').focus();
+      $('offer').hidden = false; $('offerClose').focus(); ding();
     }, 700);
   }
   window.__wt = { finish: finish };
-  $('offerClose').addEventListener('click', () => { $('offer').hidden = true; });
+  // Sounds: unlocked by the customer's first tap (browsers block audio before that)
+  let actx = null;
+  const unlock = () => { try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); if (actx.state === 'suspended') actx.resume(); } catch (e) {} };
+  ['click', 'touchstart', 'keydown'].forEach(ev => document.addEventListener(ev, unlock, { passive: true }));
+  function ding() {
+    try {
+      unlock(); if (!actx) return;
+      const t = actx.currentTime;
+      [[880, 0], [1320, 0.12]].forEach(([f, d]) => {
+        const o = actx.createOscillator(), g = actx.createGain();
+        o.type = 'sine'; o.frequency.value = f; o.connect(g); g.connect(actx.destination);
+        g.gain.setValueAtTime(0.0001, t + d); g.gain.exponentialRampToValueAtTime(0.35, t + d + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + d + 0.9);
+        o.start(t + d); o.stop(t + d + 1);
+      });
+    } catch (e) {}
+  }
+  // Schedule-a-call (Eastern time, next 3 days, 7 AM to 9 PM)
+  const ET = 'America/New_York';
+  function etParts(d) {
+    const p = {}; new Intl.DateTimeFormat('en-US', { timeZone: ET, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false, weekday: 'short', month_: 'short' }).formatToParts(d).forEach(x => p[x.type] = x.value);
+    return { y: +p.year, m: +p.month, d: +p.day, h: (+p.hour) % 24, min: +p.minute };
+  }
+  function buildSched() {
+    const now = etParts(new Date());
+    const nowMin = now.h * 60 + now.min + 60; // at least an hour from now
+    const days = [];
+    for (let i = 0; i < 3; i++) {
+      const dt = new Date(Date.UTC(now.y, now.m - 1, now.d + i, 12));
+      const label = (i === 0 ? 'Today, ' : i === 1 ? 'Tomorrow, ' : '') + dt.toLocaleDateString('en-US', { timeZone: 'UTC', weekday: 'long', month: 'short', day: 'numeric' });
+      const iso = dt.toISOString().slice(0, 10);
+      const slots = [];
+      for (let m = 7 * 60; m <= 21 * 60; m += 30) { if (i === 0 && m < nowMin) continue; slots.push(m); }
+      if (slots.length) days.push({ iso, label, slots });
+    }
+    $('schedDay').innerHTML = days.map((d, k) => '<option value="' + k + '">' + d.label + '</option>').join('');
+    const fill = () => {
+      const d = days[+$('schedDay').value];
+      $('schedTime').innerHTML = d.slots.map(m => { const h = Math.floor(m / 60), mm = m % 60; const lab = ((h + 11) % 12 + 1) + ':' + String(mm).padStart(2, '0') + ' ' + (h < 12 ? 'AM' : 'PM'); return '<option value="' + m + '">' + lab + '</option>'; }).join('');
+    };
+    $('schedDay').onchange = fill; fill();
+    $('schedDay')._days = days;
+  }
+  $('offerClose').addEventListener('click', () => {
+    $('offer').hidden = true;
+    buildSched(); $('schedErr').hidden = true; $('schedGo').disabled = false;
+    document.querySelectorAll('.repn').forEach(e => { e.textContent = repName; });
+    $('sched').hidden = false;
+  });
+  $('schedSkip').addEventListener('click', () => { $('sched').hidden = true; });
+  $('schedGo').addEventListener('click', async () => {
+    const days = $('schedDay')._days, d = days[+$('schedDay').value], m = +$('schedTime').value;
+    const h = Math.floor(m / 60), mm = m % 60;
+    const timeLab = $('schedTime').selectedOptions[0].textContent;
+    const when = d.iso + ' ' + String(h).padStart(2, '0') + ':' + String(mm).padStart(2, '0') + ' ET';
+    const out = { uid: answers.uid, first: answers.first, last: answers.last, phone: answers.phone, when: when, label: d.label.replace(/,/g, '') + ' at ' + timeLab + ' ET' };
+    $('schedGo').disabled = true;
+    const png = Uint8Array.from(atob('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=='), c => c.charCodeAt(0));
+    const ctx = Object.keys(out).map(k => k + '=' + clean(out[k])).join('|');
+    for (let a = 0; a < 3; a++) {
+      try {
+        const fd = new FormData();
+        fd.append('upload_preset', CONFIG.uploadPreset); fd.append('tags', 'walkthrough_callback'); fd.append('context', ctx);
+        fd.append('file', new Blob([png], { type: 'image/png' }), 'c.png');
+        const r = await fetch('https://api.cloudinary.com/v1_1/' + CONFIG.cloudName + '/image/upload', { method: 'POST', body: fd });
+        if (!r.ok) throw new Error('x');
+        $('schedTitle').textContent = 'You\'re booked';
+        $('sched').querySelector('p').textContent = repName + ' will call you ' + out.label + '.';
+        ['schedDay', 'schedTime', 'schedGo'].forEach(i => $(i).hidden = true); $('schedTime').previousElementSibling.hidden = true; $('schedDay').previousElementSibling.hidden = true;
+        $('schedSkip').textContent = 'Close';
+        return;
+      } catch (err) { await new Promise(z => setTimeout(z, 1200)); }
+    }
+    $('schedErr').textContent = 'That didn\'t send. Check your connection and try again.'; $('schedErr').hidden = false; $('schedGo').disabled = false;
+  });
   $('offerCall').addEventListener('click', e => {
     const num = (CONFIG.callNumber || '').replace(/[^0-9+]/g, '');
     const touch = /iPhone|iPad|Android|Mobile/i.test(navigator.userAgent);
@@ -445,7 +532,7 @@ input:focus-visible,button:focus-visible,.choice:focus-within{outline:2px solid 
   function showQuestions(uid, qs, after) {
     $('qlist').innerHTML = qs.map(q => '<fieldset class="q" style="border:0;padding:0;margin:0 0 14px"><legend class="label" style="margin-bottom:6px">' + q.text.replace(/[<>&]/g, '') + '</legend><div class="choices">' +
       q.options.map(o => '<label class="choice"><input type="radio" name="q_' + q.id + '" value="' + o.key + '"> ' + o.label.replace(/[<>&]/g, '') + '</label>').join('') + '</div></fieldset>').join('');
-    show('questions');
+    show('questions'); ding();
     $('questions').onsubmit = async e => {
       e.preventDefault();
       const out = { uid: uid };
