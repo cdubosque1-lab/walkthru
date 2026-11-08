@@ -39,6 +39,11 @@ header p.lead{color:var(--muted)}
 .field{display:flex;flex-direction:column;gap:6px}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 label,.label{font-size:14px;font-weight:600}
+label.sub{font-weight:500;color:var(--muted);font-size:13px}
+.row3{display:grid;grid-template-columns:1.6fr .7fr 1fr;gap:10px}
+select{width:100%;min-height:48px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font:inherit}
+.q{display:flex;flex-direction:column;gap:8px;padding-top:4px}
+.pct{font-size:44px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
 input[type=text],input[type=date],input[type=tel]{width:100%;min-height:48px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font:inherit}
 input:focus-visible,button:focus-visible,.choice:focus-within{outline:2px solid var(--accent);outline-offset:2px}
 .choices{display:flex;flex-direction:column;gap:8px}
@@ -88,10 +93,22 @@ input:focus-visible,button:focus-visible,.choice:focus-within{outline:2px solid 
       <div class="field"><label for="first">First name</label><input id="first" type="text" autocomplete="given-name" required></div>
       <div class="field"><label for="last">Last name</label><input id="last" type="text" autocomplete="family-name" required></div>
     </div>
-    <div class="row2">
-      <div class="field"><label for="fromZip">Moving from (zip)</label><input id="fromZip" type="text" inputmode="numeric" pattern="[0-9]{5}" maxlength="5" autocomplete="postal-code" required></div>
-      <div class="field"><label for="toZip">Moving to (zip)</label><input id="toZip" type="text" inputmode="numeric" pattern="[0-9]{5}" maxlength="5" required></div>
-    </div>
+    <fieldset class="field" style="border:0;padding:0;margin:0">
+      <legend class="label" style="margin-bottom:6px">Moving from</legend>
+      <div class="field"><label class="sub" for="fromAddr">Street address</label><input id="fromAddr" type="text" autocomplete="street-address" required></div>
+      <div class="row3"><div class="field"><label class="sub" for="fromCity">City</label><input id="fromCity" type="text" required></div>
+      <div class="field"><label class="sub" for="fromState">State</label><input id="fromState" type="text" maxlength="2" autocapitalize="characters" required></div>
+      <div class="field"><label class="sub" for="fromZip">Zip</label><input id="fromZip" type="text" inputmode="numeric" pattern="[0-9]{5}" maxlength="5" autocomplete="postal-code" required></div></div>
+    </fieldset>
+    <fieldset class="field" style="border:0;padding:0;margin:0">
+      <legend class="label" style="margin-bottom:6px">Moving to</legend>
+      <div class="field"><label class="sub" for="toAddr">Street address</label><input id="toAddr" type="text" required></div>
+      <div class="row3"><div class="field"><label class="sub" for="toCity">City</label><input id="toCity" type="text" required></div>
+      <div class="field"><label class="sub" for="toState">State</label><input id="toState" type="text" maxlength="2" autocapitalize="characters" required></div>
+      <div class="field"><label class="sub" for="toZip">Zip</label><input id="toZip" type="text" inputmode="numeric" pattern="[0-9]{5}" maxlength="5" required></div></div>
+    </fieldset>
+    <div class="field"><label for="beds">How many bedrooms are you moving?</label>
+      <select id="beds" required><option value="">Choose one</option><option>Studio</option><option>1 bedroom</option><option>2 bedrooms</option><option>3 bedrooms</option><option>4 bedrooms</option><option>5 or more bedrooms</option></select></div>
     <div class="row2">
       <div class="field"><label for="phone">Mobile number</label><input id="phone" type="tel" inputmode="tel" autocomplete="tel" required></div>
       <div class="field"><label for="email">Email (optional)</label><input id="email" type="text" inputmode="email" autocomplete="email"></div>
@@ -148,6 +165,23 @@ input:focus-visible,button:focus-visible,.choice:focus-within{outline:2px solid 
     <button class="btn secondary" id="redo" type="button">Record again</button>
   </section>
 
+  <!-- Analyzing -->
+  <section id="analyzing" class="card" hidden>
+    <h2>Analyzing video</h2>
+    <p class="pct" id="pct">0%</p>
+    <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" id="abar"><i id="abarFill"></i></div>
+    <p class="meta">This takes a few minutes. Keep this page open.</p>
+  </section>
+
+  <!-- Questions -->
+  <form id="questions" class="card" hidden novalidate>
+    <h2>A few quick questions</h2>
+    <p class="meta">We went through your video. Help us get these right.</p>
+    <div id="qlist"></div>
+    <p class="err" id="qErr" role="alert" hidden></p>
+    <button class="btn" id="qSend" type="submit">Submit answers</button>
+  </form>
+
   <!-- Step 4: done -->
   <section id="done" class="card" hidden>
     <div class="done">
@@ -179,8 +213,8 @@ input:focus-visible,button:focus-visible,.choice:focus-within{outline:2px solid 
   let started = 0, tick = null, hasSound = false, wakeLock = null, recordedSeconds = 0;
 
   function show(id) {
-    ['details', 'capture', 'review', 'done'].forEach(s => { $(s).hidden = s !== id; });
-    const n = { details: 1, capture: 2, review: 3, done: 3 }[id];
+    ['details', 'capture', 'review', 'analyzing', 'questions', 'done'].forEach(s => { $(s).hidden = s !== id; });
+    const n = { details: 1, capture: 2, review: 3, analyzing: 3, questions: 3, done: 3 }[id];
     ['s1', 's2', 's3'].forEach((s, i) => $(s).classList.toggle('on', i < n));
     window.scrollTo({ top: 0 });
   }
@@ -192,6 +226,9 @@ input:focus-visible,button:focus-visible,.choice:focus-within{outline:2px solid 
     e.preventDefault();
     const first = $('first').value.trim(), last = $('last').value.trim();
     const fromZip = $('fromZip').value.trim(), toZip = $('toZip').value.trim();
+    const fromAddr = $('fromAddr').value.trim(), fromCity = $('fromCity').value.trim(), fromState = $('fromState').value.trim().toUpperCase();
+    const toAddr = $('toAddr').value.trim(), toCity = $('toCity').value.trim(), toState = $('toState').value.trim().toUpperCase();
+    const beds = $('beds').value;
     const moveDate = $('moveDate').value;
     const phone = $('phone').value.replace(/[^0-9]/g, '').replace(/^1(?=\d{10}$)/, '');
     const email = $('email').value.trim();
@@ -200,13 +237,15 @@ input:focus-visible,button:focus-visible,.choice:focus-within{outline:2px solid 
     if (!first || !last) problems.push('your first and last name');
     if (phone.length !== 10) problems.push('a 10-digit mobile number');
     if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) problems.push('a valid email (or leave it blank)');
-    if (!/^\d{5}$/.test(fromZip) || !/^\d{5}$/.test(toZip)) problems.push('both 5-digit zip codes');
+    if (!fromAddr || !fromCity || !/^[A-Z]{2}$/.test(fromState) || !/^\d{5}$/.test(fromZip)) problems.push('your full moving-from address');
+    if (!toAddr || !toCity || !/^[A-Z]{2}$/.test(toState) || !/^\d{5}$/.test(toZip)) problems.push('your full moving-to address');
+    if (!beds) problems.push('how many bedrooms');
     if (!moveDate) problems.push('your move date');
     if (!packing) problems.push('whether you will pack');
     if (!$('consent').checked) problems.push('the checkbox to agree');
     if (problems.length) { $('detailsErr').textContent = 'Please add ' + problems.join(', ') + '.'; $('detailsErr').hidden = false; return; }
     $('detailsErr').hidden = true;
-    answers = { first, last, phone, email, from_zip: fromZip, to_zip: toZip, move_date: moveDate, packing, rep: repName };
+    answers = { first, last, phone, email, from_addr: fromAddr, from_city: fromCity, from_state: fromState, from_zip: fromZip, to_addr: toAddr, to_city: toCity, to_state: toState, to_zip: toZip, bedrooms: beds, move_date: moveDate, packing, rep: repName };
     show('capture');
   });
 
@@ -326,6 +365,68 @@ input:focus-visible,button:focus-visible,.choice:focus-within{outline:2px solid 
 
   $('redo').addEventListener('click', () => { clip = null; $('filePick').value = ''; show('capture'); });
 
+  // Analyzing, then questions
+  const RESULT_BASE = location.href.split('#')[0].replace(/[^/]*$/, '') + 'results/';
+  function finish(msg) {
+    $('doneTitle').textContent = 'Thanks, ' + answers.first + '!';
+    $('doneText').textContent = msg || (repName + ' is preparing your quote.');
+    show('done');
+  }
+  function startAnalyzing(uid) {
+    show('analyzing');
+    const t0 = Date.now();
+    let pct = 0, stopped = false;
+    const setPct = p => { pct = p; $('pct').textContent = Math.floor(p) + '%'; $('abarFill').style.width = p + '%'; $('abar').setAttribute('aria-valuenow', Math.floor(p)); };
+    setPct(0);
+    const tick = setInterval(() => {
+      if (stopped) return;
+      const sec = (Date.now() - t0) / 1000;
+      setPct(Math.min(99, 99 * (1 - Math.exp(-sec / 150))));
+    }, 500);
+    const poll = async () => {
+      if (stopped) return;
+      try {
+        const r = await fetch(RESULT_BASE + uid + '.json?x=' + Date.now(), { cache: 'no-store' });
+        if (r.ok) {
+          const res = await r.json();
+          stopped = true; clearInterval(tick);
+          for (let p = Math.floor(pct); p <= 100; p += 2) { setPct(Math.min(100, p)); await new Promise(z => setTimeout(z, 40)); }
+          setPct(100);
+          await new Promise(z => setTimeout(z, 500));
+          if (res.questions && res.questions.length) showQuestions(uid, res.questions); else finish();
+          return;
+        }
+      } catch (e) {}
+      if ((Date.now() - t0) > 45 * 60 * 1000) { stopped = true; clearInterval(tick); finish(repName + ' will review your video and follow up with your quote.'); return; }
+      setTimeout(poll, 10000);
+    };
+    setTimeout(poll, 8000);
+  }
+  function showQuestions(uid, qs) {
+    $('qlist').innerHTML = qs.map(q => '<fieldset class="q" style="border:0;padding:0;margin:0 0 14px"><legend class="label" style="margin-bottom:6px">' + q.text.replace(/[<>&]/g, '') + '</legend><div class="choices">' +
+      q.options.map(o => '<label class="choice"><input type="radio" name="q_' + q.id + '" value="' + o.key + '"> ' + o.label.replace(/[<>&]/g, '') + '</label>').join('') + '</div></fieldset>').join('');
+    show('questions');
+    $('questions').onsubmit = async e => {
+      e.preventDefault();
+      const out = { uid: uid };
+      for (const q of qs) { const c = document.querySelector('input[name=q_' + q.id + ']:checked'); if (!c) { $('qErr').textContent = 'Please answer every question.'; $('qErr').hidden = false; return; } out['q_' + q.id] = c.value; }
+      $('qErr').hidden = true; $('qSend').disabled = true;
+      const png = Uint8Array.from(atob('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=='), c => c.charCodeAt(0));
+      const ctx = Object.keys(out).map(k => k + '=' + clean(out[k])).join('|');
+      for (let a = 0; a < 3; a++) {
+        try {
+          const fd = new FormData();
+          fd.append('upload_preset', CONFIG.uploadPreset); fd.append('tags', 'walkthrough_answers'); fd.append('context', ctx);
+          fd.append('file', new Blob([png], { type: 'image/png' }), 'a.png');
+          const r = await fetch('https://api.cloudinary.com/v1_1/' + CONFIG.cloudName + '/image/upload', { method: 'POST', body: fd });
+          if (!r.ok) throw new Error('x');
+          finish(); return;
+        } catch (err) { await new Promise(z => setTimeout(z, 1200)); }
+      }
+      $('qErr').textContent = 'That didn\'t send. Check your connection and tap Submit again.'; $('qErr').hidden = false; $('qSend').disabled = false;
+    };
+  }
+
   // Step 3: chunked upload to Cloudinary
   function postChunk(url, fd, uid, from, to, total, onProgress) {
     return new Promise((resolve, reject) => {
@@ -349,6 +450,7 @@ input:focus-visible,button:focus-visible,.choice:focus-within{outline:2px solid 
     $('upErr').hidden = true; $('progressWrap').hidden = false;
     const url = 'https://api.cloudinary.com/v1_1/' + CONFIG.cloudName + '/video/upload';
     const uid = 'wt' + Date.now() + Math.random().toString(36).slice(2, 10);
+    answers.uid = uid;
     const ctx = Object.assign({}, answers, { sound: hasSound ? 'yes' : 'no', seconds: String(recordedSeconds || '') });
     const context = Object.keys(ctx).map(k => k + '=' + clean(ctx[k])).join('|');
     const size = clip.size, CH = 8 * 1024 * 1024;
@@ -378,9 +480,7 @@ input:focus-visible,button:focus-visible,.choice:focus-within{outline:2px solid 
         }
         start = end;
       }
-      $('doneTitle').textContent = 'Thanks, ' + answers.first + '!';
-      $('doneText').textContent = 'Your walkthrough is in. ' + repName + ' will review it and get back to you shortly.';
-      show('done');
+      startAnalyzing(uid);
     } catch (err) {
       $('upErr').textContent = 'The upload didn\'t finish: ' + err.message + '. Check your connection and tap Send video again.';
       $('upErr').hidden = false;
