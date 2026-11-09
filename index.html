@@ -123,6 +123,46 @@ details.more summary{cursor:pointer;font-weight:700;color:var(--accent-text)}
 .hint{font-size:13px;color:var(--muted)}
 .savebox{padding:14px;border-radius:14px;border:1px dashed var(--accent);background:var(--accent-soft);display:flex;flex-direction:column;gap:6px;font-size:14px}
 .savebox b{font-size:15px;color:var(--accent-text)}
+.show{margin-top:22px;min-height:430px;justify-content:center;position:relative;overflow:hidden;border-radius:22px;padding:22px 20px 18px;display:flex;flex-direction:column;align-items:center;gap:9px;text-align:center;color:#EAF0FA;background:radial-gradient(120% 90% at 15% 0%,#1C4A82 0%,#12315A 45%,#0A1B33 100%);box-shadow:0 10px 30px rgba(10,27,51,.28)}
+.show::before,.show::after{content:"";position:absolute;border-radius:50%;filter:blur(38px);opacity:.5;pointer-events:none;animation:orb 9s ease-in-out infinite alternate}
+.show::before{width:170px;height:170px;background:#D9480F;top:-60px;right:-50px}
+.show::after{width:150px;height:150px;background:#3C7DD9;bottom:-70px;left:-40px;animation-delay:-4s}
+@keyframes orb{from{transform:translate(0,0) scale(1)}to{transform:translate(-26px,18px) scale(1.25)}}
+.show>*{position:relative;z-index:1}
+.showart{width:100%;max-width:300px;height:160px;display:flex;align-items:center;justify-content:center}
+.showart svg{width:100%;height:100%;overflow:visible}
+.show h3{font-size:21px;font-weight:800;letter-spacing:-.015em;margin:0;color:#fff;line-height:1.2}
+.show p{margin:0;color:#C9D6EA;font-size:15px;line-height:1.55;max-width:340px}
+.show .kick{font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:#FFB083;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.14);padding:4px 11px;border-radius:99px}
+.show .dots span{background:rgba(255,255,255,.28)}
+.show .dots span.on{background:#FF8A4C}
+.showbar{width:100%;max-width:340px;height:3px;border-radius:3px;background:rgba(255,255,255,.14);overflow:hidden;margin-top:2px}
+.showbar i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#FF8A4C,#FFC48F);transform-origin:left;transform:scaleX(0);animation:sbar 14s linear forwards}
+@keyframes sbar{to{transform:scaleX(1)}}
+.showfade .kick{animation:sin .6s .05s both cubic-bezier(.2,.8,.2,1)}
+.showfade h3{animation:sin .6s .18s both cubic-bezier(.2,.8,.2,1)}
+.showfade p{animation:sin .7s .32s both cubic-bezier(.2,.8,.2,1)}
+.showfade .showart{animation:sart .8s both cubic-bezier(.2,.8,.2,1)}
+@keyframes sin{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes sart{from{opacity:0;transform:scale(.86)}to{opacity:1;transform:none}}
+.sv *{transform-box:fill-box;transform-origin:center}
+.sv .fl{animation:fl 3.2s ease-in-out infinite alternate}
+@keyframes fl{from{transform:translateY(-5px)}to{transform:translateY(5px)}}
+.sv .pu{animation:pu 1.8s ease-in-out infinite}
+@keyframes pu{0%,100%{opacity:.55;transform:scale(1)}50%{opacity:1;transform:scale(1.12)}}
+.sv .dr{stroke-dasharray:var(--l,200);stroke-dashoffset:var(--l,200);animation:dr 1.6s .4s forwards ease-out}
+@keyframes dr{to{stroke-dashoffset:0}}
+.sv .pop{opacity:0;animation:pop .5s forwards cubic-bezier(.2,1.4,.4,1)}
+@keyframes pop{from{opacity:0;transform:scale(.3)}to{opacity:1;transform:none}}
+.sv .scan{animation:scan 2.4s ease-in-out infinite alternate}
+@keyframes scan{from{transform:translateY(-34px)}to{transform:translateY(34px)}}
+.sv .spin{animation:spin 1.1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.sv .drive{animation:drive 3.4s ease-in-out infinite alternate}
+@keyframes drive{from{transform:translateX(-14px)}to{transform:translateX(14px)}}
+.sv .rise{animation:rise 1s .5s both cubic-bezier(.2,.8,.2,1)}
+@keyframes rise{from{transform:translateY(34px);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.show::before,.show::after,.sv *,.showbar i,.showfade *{animation:none!important}.sv .dr{stroke-dashoffset:0}.sv .pop,.sv .rise{opacity:1}.showbar i{transform:scaleX(1)}}
 .stay{background:var(--warn-bg);color:var(--warn-ink);border-radius:14px;padding:14px;display:flex;gap:12px;align-items:flex-start;font-size:15px}
 .stay b{display:block}
 .pulse{animation:pulse 1.6s ease-in-out infinite}
@@ -350,6 +390,14 @@ select{appearance:auto}
     <p class="pct" id="pct">0%</p>
     <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" id="abar"><i id="abarFill"></i></div>
     <div class="stay"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3l10 18H2z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 10v5M12 18v.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg><div><b>Please don't close this page</b>We're analyzing your video right now. This can take several minutes, and your questions will appear here. Leaving this page will lose your place.</div></div>
+      <div class="show" id="show">
+      <div class="showart" id="showArt"></div>
+      <span class="kick" id="showKick"></span>
+      <h3 id="showTitle"></h3>
+      <p id="showText"></p>
+      <div class="dots" id="showDots" aria-hidden="true"></div>
+      <div class="showbar" aria-hidden="true"><i id="showBar"></i></div>
+    </div>
   </section>
 
   <!-- Questions -->
@@ -700,8 +748,41 @@ select{appearance:auto}
       try { navigator.clipboard.writeText(CONFIG.callNumber); } catch (x) {}
     }
   });
+  // Slideshow that plays while the video is being analyzed
+  const SHOW = [
+    {k:'Why Walkthru',t:'Nobody can price a move they haven\'t seen',
+     x:'Movers who guess at your inventory can add "it wasn\'t on the list" charges on move day. Yours is being built from your own video, item by item.',
+     a:'<svg class="sv" viewBox="0 0 300 160" fill="none"><g class="fl"><rect x="40" y="14" width="78" height="132" rx="14" fill="#0A1B33" stroke="#9DB6DA" stroke-width="3"/><rect x="48" y="30" width="62" height="100" rx="6" fill="#16355F"/><rect class="scan" x="48" y="94" width="62" height="3" rx="2" fill="#FF8A4C"/><path d="M60 60h38M60 76h28M60 92h34" stroke="#3E6BA8" stroke-width="5" stroke-linecap="round"/></g><g><rect x="150" y="30" width="120" height="26" rx="8" fill="#fff" opacity=".1"/><rect x="150" y="68" width="120" height="26" rx="8" fill="#fff" opacity=".1"/><rect x="150" y="106" width="120" height="26" rx="8" fill="#fff" opacity=".1"/><path d="M164 43l6 6 11-12" stroke="#6EE7A8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" class="pop" style="animation-delay:.5s"/><path d="M164 81l6 6 11-12" stroke="#6EE7A8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" class="pop" style="animation-delay:1.3s"/><path d="M164 119l6 6 11-12" stroke="#6EE7A8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" class="pop" style="animation-delay:2.1s"/><path d="M196 43h56M196 81h44M196 119h50" stroke="#C9D6EA" stroke-width="5" stroke-linecap="round" opacity=".7"/></g></svg>'},
+    {k:'What it saves you',t:'No house call, no 20 to 30% markup',
+     x:'Companies that still send someone out to walk your home typically build that cost into your price. Your phone just did the same job.',
+     a:'<svg class="sv" viewBox="0 0 300 160" fill="none"><path class="dr" style="--l:330" d="M70 84l80-62 80 62v62H70z" stroke="#9DB6DA" stroke-width="4" stroke-linejoin="round"/><rect class="pop" style="animation-delay:1.4s" x="134" y="104" width="32" height="42" rx="3" fill="#16355F"/><g class="fl"><circle cx="230" cy="52" r="30" fill="#FF8A4C"/><text x="230" y="63" text-anchor="middle" font-size="32" font-weight="800" fill="#fff" font-family="system-ui,sans-serif">%</text></g><path class="dr" style="--l:90;animation-delay:1s" d="M208 30l44 44" stroke="#fff" stroke-width="5" stroke-linecap="round"/></svg>'},
+    {k:'Included on every move',t:'Wrapped, carried and rebuilt for you',
+     x:'Disassembly, blanket and shrink wrap on every piece of standard furniture, all the loading and driving, then unloading and reassembly. No extra charge.',
+     a:'<svg class="sv" viewBox="0 0 300 160" fill="none"><g class="drive"><rect x="40" y="46" width="130" height="78" rx="8" fill="#F4F7FB"/><rect x="40" y="104" width="130" height="10" fill="#FF8A4C"/><path d="M170 70h42l24 30v24h-66z" fill="#9DB6DA"/><path d="M180 78h26l14 20h-40z" fill="#16355F"/><g class="fl"><rect x="58" y="60" width="30" height="26" rx="3" fill="#C98F55"/><rect x="94" y="68" width="26" height="18" rx="3" fill="#E4B27A"/></g><circle class="spin" cx="76" cy="128" r="13" fill="#0A1B33" stroke="#fff" stroke-width="4" stroke-dasharray="14 6"/><circle class="spin" cx="196" cy="128" r="13" fill="#0A1B33" stroke="#fff" stroke-width="4" stroke-dasharray="14 6"/></g><path d="M20 148h260" stroke="#fff" stroke-width="2" opacity=".25" stroke-dasharray="6 8"/></svg>'},
+    {k:'The biggest way to save',t:'Book ahead and save thousands',
+     x:'Moves are priced like airline tickets. Reserving early often costs 20 to 50% less, and your date stays a placeholder you can move for free.',
+     a:'<svg class="sv" viewBox="0 0 300 160" fill="none"><rect x="40" y="20" width="130" height="120" rx="12" fill="#fff" opacity=".1" stroke="#9DB6DA" stroke-width="2"/><rect x="40" y="20" width="130" height="28" rx="12" fill="#1C4A82"/><g stroke="#C9D6EA" stroke-width="3" opacity=".5" stroke-linecap="round"><path d="M60 70h14M88 70h14M116 70h14M144 70h14M60 92h14M88 92h14M116 92h14M144 92h14M60 114h14M88 114h14"/></g><circle class="pu" cx="123" cy="114" r="11" fill="#FF8A4C"/><path class="dr" style="--l:230;animation-delay:.6s" d="M190 44c20 0 24 14 40 30s28 38 54 44" stroke="#6EE7A8" stroke-width="5" stroke-linecap="round"/><path class="pop" style="animation-delay:2s" d="M270 108l14 12-18 4z" fill="#6EE7A8"/><text x="238" y="40" font-size="15" font-weight="800" fill="#6EE7A8" font-family="system-ui,sans-serif" class="pop" style="animation-delay:1.4s">-50%</text></svg>'},
+    {k:'Quality assurance',t:'Your list isn\'t set in stone',
+     x:'Three to five days before the move we call to go through the inventory one last time. Anything you take off, you don\'t pay for.',
+     a:'<svg class="sv" viewBox="0 0 300 160" fill="none"><g class="fl"><rect x="86" y="10" width="128" height="140" rx="12" fill="#fff" opacity=".1" stroke="#9DB6DA" stroke-width="2"/><rect x="124" y="4" width="52" height="18" rx="6" fill="#1C4A82"/><path d="M106 48h8M106 80h8M106 112h8" stroke="#C9D6EA" stroke-width="5" stroke-linecap="round"/><path d="M124 48h70M124 80h56M124 112h64" stroke="#C9D6EA" stroke-width="5" stroke-linecap="round" opacity=".5"/><path class="pop" style="animation-delay:.5s" d="M104 44l5 6 10-12" stroke="#6EE7A8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path class="pop" style="animation-delay:1.3s" d="M104 76l5 6 10-12" stroke="#6EE7A8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path class="pop" style="animation-delay:2.1s" d="M104 108l5 6 10-12" stroke="#6EE7A8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></g></svg>'},
+    {k:'Bonus',t:'30 days of free storage',
+     x:'Need to hold your things? The first 30 days are free, and so is redelivery to your final address. We can store for up to 2 years.',
+     a:'<svg class="sv" viewBox="0 0 300 160" fill="none"><path class="dr" style="--l:420" d="M40 66l110-48 110 48v84H40z" stroke="#9DB6DA" stroke-width="4" stroke-linejoin="round" fill="#fff" fill-opacity=".08"/><rect x="100" y="86" width="100" height="64" fill="#16355F"/><g class="rise"><rect x="108" y="116" width="30" height="30" rx="3" fill="#C98F55"/><rect x="144" y="124" width="22" height="22" rx="3" fill="#E4B27A"/><rect x="170" y="112" width="26" height="34" rx="3" fill="#FF8A4C"/></g><path d="M100 86h100" stroke="#9DB6DA" stroke-width="3" stroke-dasharray="6 5"/></svg>'}
+  ];
+  let showIx = -1, showTimer = null;
+  function showStep() {
+    showIx = (showIx + 1) % SHOW.length;
+    const d = SHOW[showIx], box = $('show');
+    $('showArt').innerHTML = d.a; $('showKick').textContent = d.k;
+    $('showTitle').textContent = d.t; $('showText').textContent = d.x;
+    $('showDots').innerHTML = SHOW.map((_, i) => '<span class="' + (i === showIx ? 'on' : '') + '"></span>').join('');
+    box.classList.remove('showfade'); const bar = $('showBar'); bar.style.animation = 'none'; void box.offsetWidth; bar.style.animation = ''; box.classList.add('showfade');
+  }
+  function showStart() { if (showTimer) return; showStep(); showTimer = setInterval(showStep, 14000); }
+  function showStop() { clearInterval(showTimer); showTimer = null; }
+  window.__wt = { slides: () => { show('analyzing'); showStart(); }, nextSlide: showStep };
   function startAnalyzing(uid) {
-    show('analyzing');
+    show('analyzing'); showStart();
     const t0 = Date.now();
     let pct = 0, stopped = false, asked = false, paused = false, answeredAt = 0;
     const setPct = p => { pct = p; $('pct').textContent = Math.floor(p) + '%'; $('abarFill').style.width = p + '%'; $('abar').setAttribute('aria-valuenow', Math.floor(p)); };
@@ -721,9 +802,9 @@ select{appearance:auto}
             const res = await r.json();
             if (res.questions && res.questions.length && !asked) {
               asked = true; paused = true; setPct(80);
-              showQuestions(uid, res.questions, res.intro || '', () => { paused = false; answeredAt = Date.now(); show('analyzing'); });
+              showStop(); showQuestions(uid, res.questions, res.intro || '', () => { paused = false; answeredAt = Date.now(); show('analyzing'); showStart(); });
             } else if (res.done && !(res.questions && res.questions.length && !asked)) {
-              stopped = true; clearInterval(tick);
+              stopped = true; clearInterval(tick); showStop();
               for (let p = Math.floor(pct); p <= 100; p += 2) { setPct(Math.min(100, p)); await new Promise(z => setTimeout(z, 40)); }
               setPct(100);
               await new Promise(z => setTimeout(z, 600));
@@ -732,7 +813,7 @@ select{appearance:auto}
             }
           }
         } catch (e) {}
-        if ((Date.now() - t0) > 90 * 60 * 1000) { stopped = true; clearInterval(tick); finish(repName + ' will follow up with your quote.'); return; }
+        if ((Date.now() - t0) > 90 * 60 * 1000) { stopped = true; clearInterval(tick); showStop(); finish(repName + ' will follow up with your quote.'); return; }
       }
       setTimeout(poll, 10000);
     };
